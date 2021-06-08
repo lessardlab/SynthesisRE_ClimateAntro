@@ -1,0 +1,131 @@
+---
+title: "Automated Content Analysis:Literature Review on Range Expansions"
+author: "Gabriel Muñoz"
+date: "6/8/2021"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1) Broad search in Web of Science 
+
+I first did a broad search in Web of Science (WoS). I use the string **"Range expansion"** as the keyword to query. Keyword was matched agains the collection of titles, abstracts, and Keywords Plus* of the full collection of WoS. That is documents from 1979 to the present date (2021). This initial search reported a literature corpus of over 7000 documents. I filter this initial search by WoS Science Categories. I selected only those categories that relate with Biology, Ecology, and Evolution. 3465 documents were left after refining this initial search results. I exported the search results from the WoS database to a .csv file. The search procedure in WoS was done during the first week of June 2021. 
+
+# 2) General bibliometrics of search results 
+
+I loaded the .csv database containing the results of the broad search in WoS to R for subsequent analysis. This literature database  contained 3465 rows and 68 columns. Every row contains information for a separate document, every column contains variable fields such as title, DOI, Abstract, which are used to categorize documents. I first was interested to observe the temporal distribution of articles mined from WoS. To this end I plotted an histogram of the article frequency (#articles/max(articles)) over the years (Figure 1). 
+
+
+```{r, echo = F, fig.cap="Figure 1: Year frequency distribution of published articles on range expansions"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/YearPublic.png"
+knitr::include_graphics(path)
+```
+
+The articles on this database came from a combination of 233 distinct sources. Which included articles, proceedings papers, article reviews, and books. I counted the number of articles per source by counting the number of unique DOIs associated to a given source title and selected the 100 article sources with the most number of articles to observe, which journals contain the most amount of published literature in range expansions. (Figure 2)
+
+```{r, echo = F, fig.cap="Figure 2: 100 sources with the most information richness on range expansions, counted as unique DOIs"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/MostRead.png"
+knitr::include_graphics(path)
+```
+Later I was interested to observe the frequency distribution of publications across the time spanned in the database, but this time refined by article source. I did this in order to reveal wheter there are journals that are more popular than others in different time periods and how fast have distinct journals have been accumulating information on range-expansions. To this end, I created a matrix with article sources as rows and year as columns. Entries in this matrix corresponded to the frequency of articles of a given source per a given year. Then I visualize this matrix as a heatmap (Figure 3). 
+
+
+```{r, echo = F, fig.cap="Figure 3: Temporal distribution of publication frequencies for every article source mined, lighter colors simbolize larger frequencies, palette scheme follows column frequencies. White shows areas with no articles"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/YearDist.png"
+knitr::include_graphics(path)
+```
+
+Results from visual interpretation suggest that there is a temporal aggregation of information, which is increasingly larger over the years but gets published into a increasingly smaller set of journals. However, this may reflect a general trend of scientific publication rather than some particularity of range-expansion research. 
+
+
+# 3) Automated content analysis 
+
+## 3.1) Annotating text from titles and abstracts. 
+
+Previous to the annotation, I created a subset of the initial database to contain only journals that are general and with a broader scope. This subsetting step reduced the initial database from +3400 articles/233 article sources to 1295 articles/48 article sources. 
+
+I use the package `udpipe` to perform text annotation. Text annotation is a text mining technique that identifies and separate paragraphs, sentences, and words from text to create variables that can be analyzed later quantitatively and qualitatively. Using a pre-trained model in English grammar, I identify the word categories for all words in the set of titles and abstracts of the literature search database. Words are tagged and identified with unique IDs that show whether the word is a noun, verb, adverb, etc. Separate word IDs locate the position of the word within the concatenated string of texts that represent titles or abstracts. The annotation was done separately for the set of titles and for the set of abstracts. P
+
+## 3.2) General word frequency patterns. 
+
+### 3.2.1) Word collocation of article titles in temporal bins
+
+Once the words in the database have been annotated, I search for potential patterns that can emerge from the annotated title and abstract word list. Because the uneven distribution of articles across the time-span of the database I first create separate partitions that contain roughly the same amount of information (as # articles). I did this by separating the cumulative sum of articles per year into quantiles. Then, for each partition I computed the frequency  of word collocations of article titles, that is words that follow each other. Because I was interested to reveal meaning from the collection of words, I computed word collocations using only nouns. For example, the nouns range and expansion usually fall together (as they are the main topic of search). For this two words, the collocation assembles as "range expansion" representing a unique term which has a distinct meaning than only range or only expansion. I visuallize the distribution of the most frequent word collocations for all partitions using wordclouds. The frequency of the word collocation in the article set of every partition dictates the relative size of the word in the wordcloud (Figure 4). I excluded from all wordclouds the word collocation "range-expansion" as, unsurprisingly, was the most frequent collocation for all partitions. 
+
+
+
+```{r, echo = F, fig.cap="Figure 4: Results of the word collocation analysis for the set of article titles across time. Time bins reflect temporal partitions of the dataset containing roughly the same amount of information"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/WordCloud1.png"
+knitr::include_graphics(path)
+```
+### 3.2.2) Word co-occurrence across article abstracts in temporal bins. 
+
+The co-occurrence of words in a sentence reflects the degree of association in between them and provide meaning to specific word combinations that enrich the lexicon available to describe a subject. I was interested in the repeated patterns of word co-occurrences across the set of abstracts representing the content of knowledge in published articles about range-expansions. Like for articles titles, I computed word cooccurrences using only nouns. I use a n-gram of 6 to create the moving window to compute word co-occurrences. That is it generates word pairs that can have 4 word degrees of separation. I this this because this abstract convey information with meaning that is spread across a larger number of sentences than the titles. I computed word-coocurrences for the same previous subset partitions of the wordclouds and generate word cooccurrence networks to establish general patterns of association between words across temporal partitions (Figure 5). 
+
+
+
+```{r, echo = F, fig.cap="Figure 5:  Network of word co-occurrences for the set of article titles across time. Time bins reflect temporal partitions of the dataset containing roughly the same amount of information"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/WordNetParti.png"
+knitr::include_graphics(path)
+```
+
+
+
+### 3.2.2) Article clustering 
+
+
+Since words and word associations convey patterns of meaning, word term vectors can be used to quantitatively compute the degree of concept similarity between two pieces of text. As such, articles can be embedded into a hyperspace of term vectors, which is typically extremely sparse. The distance between articles (or words) in this sparse hyperspace reflects the similarity of concepts conveyed in a set of articles, or a set of words. The embedding of documents in the sparce wordterm hyperspace of is usually called as **Latent Semantic Analysis (LSA)**. I performed a LSA for the full set of abstracts from the inital subset of 1295 documents using the packages `tm`, `SentimentAnalysis`, and `RWeka` for R. 
+
+My general procedure for a LSA goes went as follows: 
+
+1) I removed all numbers from abstracts (numbers in strings are coded as characters, so they can be interpreted by the machine as words and lead to non-meaninfull word co-occurrences). 
+
+2) I created a virtual corpus with the abstract text strings. Each entry of the corpus corresponds to an individual abstract. 
+
+3) I tokenize terms, remove puntuation marks, english stopwords (e.g. the, a, an, etc.), stemmed tokenized terms (leave only the word roots, e.g "cascading" and "cascade" are both equal to "cascad")
+
+4) I applied a n-gram tokenizer function to the corpus with n=3. This results in term variables that correspond to 3-wise combination of subsequent words in a sentence. I did not discriminate words based on their type for this analysis. 
+
+5) I created a document term weighted matrix, documents correspond to the abstracts and terms are the 3-gram word collocations. Weights of this matrix corresponded to the frequency of terms at a given document. 
+
+6) Computed the LSA hyperspace from the document term matrix using the lsa model from the `lsa` packge (Microsoft). 
+
+7) A computed a pairwise distance matrix between documents in the lsa hyperspace. 
+
+8) Cluster the distance matrix with k-means. I tested 3 to 10 groupings and tested the clustering of variance within groups with the Calinsky criterion. I selected as significant grouping the grouping with the lowest Calinksly. The smaller the number reflects that more variance is contained within groups than among groups. 
+
+9) Computed noun-cooccurrence networks for the set of articles at each k-mean partition (Figure 6)
+
+
+
+```{r, echo = F, fig.cap="Figure 6:  Network of word co-occurrences for dissimilar clusters of with similar document abstract contents between 1979-2021 that matched 'range expansions' and are published in general journals of Ecology"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/WordNetCluster.png"
+knitr::include_graphics(path)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
