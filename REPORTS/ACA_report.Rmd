@@ -20,6 +20,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Automated content analysis of literature on range dynamics
 
+```{r, echo = F, fig.cap="Workflow"}
+
+path <- "/home/shared/gabriel.munoz/R/Apr2019/RangeExpansion/RangeExpansionReview/FIGS/Range expansion.png"
+knitr::include_graphics(path)
+```
+
 ## Initial literature search
 
 To get a first impression of the available literature on range dynamics/expansions, we first did a broad search in Web of Science (WoS). We used the text string **"Range expansion"** as the keyword for the first query. The keyword was matched agains the collection of titles, abstracts, and Keywords Plus* of the full collection of WoS. That is documents from 1979 to the present date (2021). We filter the search results to include documents only those categories that relate with the Natural Sciences. This resulted in 3465 documents We exported the search results from the WoS webpage into a .csv file. The initial search procedure in WoS was done during the first week of June 2021. 
@@ -164,7 +170,7 @@ knitr::include_graphics(path)
 ```
 
 
-Additionally, we examine the effects of varying journals for the overall impact of a publication within the “range expansion” subset of ecological knowledge. Therefore, we classified the Journals in the final corpus based on the aggregated journal influence and overall journal popularity (or productivity). To create this metrics, we aggregated the article influence metric by its journal means (journal influence) and relate it the total number of articles (journal popularity) (Figure XXX). 	 
+Additionally, we examine the effects of varying journals for the overall impact of a publication within the “range expansion” subset of ecological knowledge. Therefore, we classified the Journals in the final corpus based on the aggregated journal influence and overall journal popularity (or productivity). To create this metrics, we aggregated the article influence metric by its journal means (journal influence) and relate it the total number of articles (journal popularity) (Figure 10). 	 
 
 ```{r, echo = F, fig.cap="Figure 9: Journal location in a popularity and influence space"}
 
